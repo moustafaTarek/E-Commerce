@@ -1,4 +1,4 @@
-# Project Title : E-Commerce
+# Project Title : Backend E-Commerce application
 
 ### Project Description:
 Simple Crud operations on the following entities :
