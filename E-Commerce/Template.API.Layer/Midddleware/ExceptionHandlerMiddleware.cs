@@ -1,4 +1,7 @@
-﻿namespace Template.API.Layer.Midddleware
+﻿using System.Text.Json;
+using Template.API.Layer.Error;
+
+namespace Template.API.Layer.Midddleware
 {
 	// You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
 	public class ExceptionHandlerMiddleware
@@ -10,7 +13,7 @@
 			_next = next;
 		}
 
-		public async Task InvokeAsyc(HttpContext httpContext)
+		public async Task InvokeAsync(HttpContext httpContext)
 		{
 			try
 			{
@@ -18,8 +21,28 @@
 			}
 			catch (Exception ex)
 			{
-				await httpContext.Response.WriteAsync(ex.Message);
+				await HandleExceptionAsync(httpContext, ex);
 			}
+		}
+
+		private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+		{
+			context.Response.ContentType = "application/json";
+
+			// Set the response status code to 500 (Internal Server Error)
+			context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+			var response = new ApiErrorResponse(ex.Message, StatusCodes.Status500InternalServerError , ex.StackTrace);
+
+			var options = new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+			};
+
+			var serializedResponse = JsonSerializer.Serialize(response, options);
+
+			// Write a custom error message or JSON response
+			await context.Response.WriteAsync(serializedResponse);
 		}
 	}
 

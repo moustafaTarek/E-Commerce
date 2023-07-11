@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder
 	.Services.AddDbContext<ApplicationDbContext>(options =>
 	{
-		options.UseNpgsql("Server=localhost;Port=5432;Database=ECommerce;User Id=postgres;Pwd=postgres;");
+		options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 	});
 builder.Services.AddCoreDependencies();
 
@@ -27,9 +27,10 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseExceptionHandlerMiddleware();
+
 app.UseHttpsRedirection();
 
-//app.UseExceptionHandlerMiddleware();
 
 app.UseAuthorization();
 

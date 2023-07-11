@@ -44,7 +44,7 @@ namespace Template.Core.Layer.Services
 			var productBrand = _productBradGenericRepository.GetEntityById(id);
 
 			if (productBrand == null)
-				throw new Exception("Not Found");
+				throw new Exception("Not Found product brand");
 
 			return productBrand;
 		}
